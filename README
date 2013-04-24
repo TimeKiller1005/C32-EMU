@@ -1,0 +1,33 @@
+=========================================================
+                         C32-EMU 
+    An emulator for a custom 32-bit RISC architecture.
+    Copyright (C) 2013, Joe Mruz
+=========================================================
+
+*TODO*
+
+--------
+Building
+--------
+Get SDL dev libraries...
+Makefiles provided in emu/ and common/
+
+------------------
+Instruction format
+------------------
+
+
+---------------
+Instruction Set
+---------------
+
+
+-------
+Devices
+-------
+
+
+-----
+Usage
+-----
+"emu -h" for usage information
