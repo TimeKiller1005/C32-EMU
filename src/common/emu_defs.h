@@ -112,14 +112,14 @@ enum reg
     REGISTER_A = 0,
     REGISTER_B,
     REGISTER_C,
+    REGISTER_D,
+    REGISTER_W,
     REGISTER_X,
     REGISTER_Y,
     REGISTER_Z,
-    REGISTER_COMPARE,   /*CFLAGS*/
+    REGISTER_RTA,
+    REGISTER_CFLAGS,
     REGISTER_PORT,
-    REGISTER_TIMERQ,    /* time quantum (# of cycles) */
-    REGISTER_TIMERA,    /* address for time jmp */
-    REGISTER_ACC,
     REGISTER_OFFSET,
     REGISTER_STACKBASE,
     REGISTER_STACKPOINTER,
@@ -136,13 +136,14 @@ enum state
 };
 
 /* Ports */
-#define MAX_PORTS (4)
+#define MAX_PORTS (5)
 enum ports
 {
 	PORT_DISPLAY = 0,
 	PORT_KEYBOARD,
 	PORT_DISK,
-    PORT_ROM
+    PORT_ROM,
+    PORT_CLOCK
 };
 
 #endif	/* _EMU_DEFS_H_ */

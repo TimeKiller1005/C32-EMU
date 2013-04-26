@@ -158,7 +158,7 @@ cpu_process(cpu_t *cpu, ram_t *ram)
 		case BSR: cpu->registers [dst] = cpu->registers [dst] >> 
 										 cpu->registers [src]; 
 			break;
-		case CMP: utils_compare (&cpu->registers [REGISTER_COMPARE], 
+		case CMP: utils_compare (&cpu->registers [REGISTER_CFLAGS], 
                                   cpu->registers [dst], 
                                   cpu->registers [src]); 
             break;
@@ -177,7 +177,7 @@ cpu_process(cpu_t *cpu, ram_t *ram)
         case OUT: 
             if (cpu->registers [REGISTER_PORT] >= MAX_PORTS) 
             {
-                printf ("Warning: invalid port %d in HWO instruction\n",
+                printf ("Warning: invalid port %d in OUT instruction\n",
 						cpu->registers [REGISTER_PORT]);
                 /*DO NOTHING*/
             }
@@ -219,19 +219,19 @@ cpu_process(cpu_t *cpu, ram_t *ram)
 			cpu->registers [REGISTER_PC] = cpu->registers [dst]; 
 			break;
         case JZ: 
-            if (cpu->registers [REGISTER_COMPARE] & 0x00000001)
+            if (cpu->registers [REGISTER_CFLAGS] & 0x00000001)
                 cpu->registers [REGISTER_PC] = long_const;
             break;
         case JNZ:
-            if (! (cpu->registers [REGISTER_COMPARE] & 0x00000001))
+            if (! (cpu->registers [REGISTER_CFLAGS] & 0x00000001))
                 cpu->registers [REGISTER_PC] = long_const;
             break;
         case JS:
-            if (cpu->registers [REGISTER_COMPARE] & 0x00000002)
+            if (cpu->registers [REGISTER_CFLAGS] & 0x00000002)
                 cpu->registers [REGISTER_PC] = long_const;
             break;
         case JNS:
-            if (! (cpu->registers [REGISTER_COMPARE] & 0x00000002))
+            if (! (cpu->registers [REGISTER_CFLAGS] & 0x00000002))
                 cpu->registers [REGISTER_PC] = long_const;
             break;
 		case RET:
@@ -255,7 +255,7 @@ cpu_process(cpu_t *cpu, ram_t *ram)
             cpu->registers [REGISTER_PC] = cpu->registers [dst];
             break;
         case CZ: 
-        	if (cpu->registers [REGISTER_COMPARE] & 0x00000001) 
+        	if (cpu->registers [REGISTER_CFLAGS] & 0x00000001) 
         	{
         		cpu->registers [REGISTER_STACKPOINTER] -= 4;
             	utils_store (ram, 
@@ -266,7 +266,7 @@ cpu_process(cpu_t *cpu, ram_t *ram)
             }
         	break;
         case CNZ: 
-        	if (! (cpu->registers [REGISTER_COMPARE] & 0x00000001)) 
+        	if (! (cpu->registers [REGISTER_CFLAGS] & 0x00000001)) 
         	{
         		cpu->registers [REGISTER_STACKPOINTER] -= 4;
             	utils_store (ram, 
@@ -277,7 +277,7 @@ cpu_process(cpu_t *cpu, ram_t *ram)
             }
         	break;
         case CS: 
-        	if (cpu->registers [REGISTER_COMPARE] & 0x00000002)
+        	if (cpu->registers [REGISTER_CFLAGS] & 0x00000002)
         	{
         		cpu->registers [REGISTER_STACKPOINTER] -= 4;
             	utils_store (ram, 
@@ -288,7 +288,7 @@ cpu_process(cpu_t *cpu, ram_t *ram)
             }
         	break;
         case CNS: 
-        	if (! (cpu->registers [REGISTER_COMPARE] & 0x00000002))
+        	if (! (cpu->registers [REGISTER_CFLAGS] & 0x00000002))
         	{
         		cpu->registers [REGISTER_STACKPOINTER] -= 4;
             	utils_store (ram, 
@@ -316,19 +316,19 @@ cpu_process(cpu_t *cpu, ram_t *ram)
                                            cpu->registers [REGISTER_OFFSET]; 
             break;
         case DJZ: 
-        	if (cpu->registers [REGISTER_COMPARE] & 0x00000001)
+        	if (cpu->registers [REGISTER_CFLAGS] & 0x00000001)
                 cpu->registers [REGISTER_PC] = long_const + cpu->registers [REGISTER_OFFSET];
         	break;
         case DJNZ: 
-        	if (! (cpu->registers [REGISTER_COMPARE] & 0x00000001))
+        	if (! (cpu->registers [REGISTER_CFLAGS] & 0x00000001))
                 cpu->registers [REGISTER_PC] = long_const + cpu->registers [REGISTER_OFFSET];
         	break;
         case DJS: 
-        	if (cpu->registers [REGISTER_COMPARE] & 0x00000002)
+        	if (cpu->registers [REGISTER_CFLAGS] & 0x00000002)
                 cpu->registers [REGISTER_PC] = long_const + cpu->registers [REGISTER_OFFSET];
             break;
         case DJNS: 
-        	if (! (cpu->registers [REGISTER_COMPARE] & 0x00000002))
+        	if (! (cpu->registers [REGISTER_CFLAGS] & 0x00000002))
                 cpu->registers [REGISTER_PC] = long_const + cpu->registers [REGISTER_OFFSET];
         	break;
         case DRET: 
@@ -349,7 +349,7 @@ cpu_process(cpu_t *cpu, ram_t *ram)
             cpu->registers [REGISTER_PC] = cpu->registers [dst] + cpu->registers [REGISTER_OFFSET];
         	break;
         case DCZ: 
-        	if (cpu->registers [REGISTER_COMPARE] & 0x00000001) 
+        	if (cpu->registers [REGISTER_CFLAGS] & 0x00000001) 
         	{
         		cpu->registers [REGISTER_STACKPOINTER] -= 4;
             	utils_store (ram, 
@@ -360,7 +360,7 @@ cpu_process(cpu_t *cpu, ram_t *ram)
             }
         	break;
         case DCNZ: 
-        	if (! (cpu->registers [REGISTER_COMPARE] & 0x00000001)) 
+        	if (! (cpu->registers [REGISTER_CFLAGS] & 0x00000001)) 
         	{
         		cpu->registers [REGISTER_STACKPOINTER] -= 4;
             	utils_store (ram, 
@@ -371,7 +371,7 @@ cpu_process(cpu_t *cpu, ram_t *ram)
             }
         	break;
         case DCS: 
-        	if (cpu->registers [REGISTER_COMPARE] & 0x00000002)
+        	if (cpu->registers [REGISTER_CFLAGS] & 0x00000002)
         	{
         		cpu->registers [REGISTER_STACKPOINTER] -= 4;
             	utils_store (ram, 
@@ -382,7 +382,7 @@ cpu_process(cpu_t *cpu, ram_t *ram)
             }
         	break;
         case DCNS: 
-        	if (! (cpu->registers [REGISTER_COMPARE] & 0x00000002))
+        	if (! (cpu->registers [REGISTER_CFLAGS] & 0x00000002))
         	{
         		cpu->registers [REGISTER_STACKPOINTER] -= 4;
             	utils_store (ram, 
@@ -432,6 +432,8 @@ cpu_process(cpu_t *cpu, ram_t *ram)
  * Returns: void
  *--------------------------------------------------
  */
+/* todo: can be removed when replaced with hardware clock */
+/*
 void 
 cpu_chk_tmr(cpu_t *cpu, ram_t *ram)
 {
@@ -448,3 +450,4 @@ cpu_chk_tmr(cpu_t *cpu, ram_t *ram)
         ram->instruction = ((struct instr_s *) &ram->address) + cpu->registers [REGISTER_PC];
     }
 }
+*/

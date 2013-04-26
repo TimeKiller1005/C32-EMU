@@ -43,6 +43,7 @@ ram_t       Ram [1];
 disk_t      Disk [1];
 disk_t      Rom [1];
 disp_t      Display [1];
+clk_t       Clock [1];
 int         Emu_run;
 uint32_t    Kb_buffer [KEYBOARD_BUFFER_SIZE];
 
@@ -72,7 +73,8 @@ emu_init(void)
     disk_init (Disk);
     disk_init (Rom);
     disp_init (Display);
-    
+    clk_init (Clock);
+
     memset (Kb_buffer, 0, sizeof (Kb_buffer));
 
     printf ("loading disk...\n");
@@ -140,7 +142,9 @@ emu_main_loop(void)
         sdl_sleep ();
     }
 
-    cpu_chk_tmr (Cpu, Ram);
+    /*todo: can be removed when replaced with hardware clock*/
+    /*cpu_chk_tmr (Cpu, Ram);*/
+    clk_chk_tmr (Clock, Cpu, Ram);
        
     if (!Emu_run)
     {
@@ -166,6 +170,7 @@ emu_rd_ports(void)
 	disk_rd_port(Disk, &(Cpu->ports [PORT_DISK]), Ram);
     disk_rd_port(Rom, &(Cpu->ports [PORT_ROM]), Ram);
 	disp_rd_port(Display, &(Cpu->ports [PORT_DISPLAY]), Ram);
+    clk_rd_port(Clock, &(Cpu->ports [PORT_CLOCK]));
 }
 
 /*

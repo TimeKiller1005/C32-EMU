@@ -16,6 +16,7 @@ SRCS=main.c \
 		emu_disp.c \
 		emu_disk.c \
 		emu_sdl.c \
+		emu_clk.c
 
 COMMON_SRCS=$(COMMON)/file_utils.c
 COMMON_OBJS=$(subst .c,.o,$(COMMON_SRCS))

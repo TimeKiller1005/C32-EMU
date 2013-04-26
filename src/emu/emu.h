@@ -91,6 +91,14 @@ struct disk_s
     uint32_t	mapped_buffer_start;
 };
 
+/* clock structure */
+struct clk_s
+{
+    uint32_t    quantum;
+    uint32_t    address;
+    uint8_t     state;
+};
+
 /* display monitor structure */
 
 typedef struct disp_hwcurs_s
@@ -119,6 +127,7 @@ typedef struct cpu_s     cpu_t;
 typedef struct ram_s     ram_t;
 typedef struct disk_s    disk_t;
 typedef struct disp_s    disp_t;
+typedef struct clk_s     clk_t;
 
 /*
  *--------------------------------------------------
@@ -160,5 +169,8 @@ void disk_save(disk_t *disk, const char *filename);
 void disp_init(disp_t *disp);
 void disp_rd_port(disp_t *disp, uint32_t *dat, ram_t *ram);
 void disp_rd_adr_map(disp_t *disp, ram_t *ram);
+void clk_init(clk_t *clk);
+void clk_rd_port(clk_t *clk, uint32_t *dat);
+void clk_chk_tmr(clk_t *clk, cpu_t *cpu, ram_t *ram);
 
 #endif  /* _EMU_H_ */

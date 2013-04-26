@@ -529,14 +529,14 @@ uint8_t register_a2i (string& reg)
 	if(reg == "%A")			return REGISTER_A;
 	if(reg == "%B")			return REGISTER_B;
 	if(reg == "%C")			return REGISTER_C;
+    if(reg == "%D")         return REGISTER_D;
+    if(reg == "%W")         return REGISTER_W;
 	if(reg == "%X")			return REGISTER_X;
 	if(reg == "%Y")			return REGISTER_Y;
 	if(reg == "%Z")			return REGISTER_Z;
-	if(reg == "%CFLAGS")	return REGISTER_COMPARE;
+    if(reg == "%RTA")       return REGISTER_RTA;
+	if(reg == "%CFLAGS")	return REGISTER_CFLAGS;
 	if(reg == "%PORT")		return REGISTER_PORT;
-	if(reg == "%TQ")		return REGISTER_TIMERQ;
-	if(reg == "%TA")		return REGISTER_TIMERA;
-	if(reg == "%ACC")		return REGISTER_ACC;
 	if(reg == "%OFFSET")	return REGISTER_OFFSET;
 	if(reg == "%SB")		return REGISTER_STACKBASE;
 	if(reg == "%SP")		return REGISTER_STACKPOINTER;
