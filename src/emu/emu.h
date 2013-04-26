@@ -97,6 +97,7 @@ struct clk_s
     uint32_t    quantum;
     uint32_t    address;
     uint8_t     state;
+    uint32_t    prv_tm;
 };
 
 /* display monitor structure */
@@ -172,5 +173,6 @@ void disp_rd_adr_map(disp_t *disp, ram_t *ram);
 void clk_init(clk_t *clk);
 void clk_rd_port(clk_t *clk, uint32_t *dat);
 void clk_chk_tmr(clk_t *clk, cpu_t *cpu, ram_t *ram);
+void clk_get_tv_usec(uint32_t *tv);
 
 #endif  /* _EMU_H_ */

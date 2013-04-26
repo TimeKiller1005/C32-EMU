@@ -88,21 +88,6 @@ cpu_process(cpu_t *cpu, ram_t *ram)
 	src 		= (dst_src & 0x0f);
 	long_const	= ((src << 16) | constant) & 0x000FFFFF;
 
-#if 0
-	printf ("0x%x : 0x%x 0x%x 0x%x 0x%x\n",
-			cpu->registers[REGISTER_PC],
-			opcode, dst, src, constant);	
-    switch (opcode)
-    {
-        case JMP: case JZ: case JR: case JNZ:
-        case JS:  case JNS:case CR: case CZ:
-        case CNZ: case CS: case CNS:  
-            printf("Warning: jumping to an absolute address\n");
-            break;
-        default: break;
-    }
-#endif
-    
 	/* interpret */
 	switch (opcode)
 	{
@@ -419,35 +404,3 @@ cpu_process(cpu_t *cpu, ram_t *ram)
 	cpu->registers [REGISTER_PC] += 4;
     cpu->cycle ++;
 }
-
-/*
- *--------------------------------------------------
- * Function: cpu_chk_tmr
- * Description:	
- *		Check the hardware clock.
- *		Perform a "CALL" to the address in register
- *		TIMERA if the time quantum and address are
- *		set and the time quantum is up.
- * Params:
- * Returns: void
- *--------------------------------------------------
- */
-/* todo: can be removed when replaced with hardware clock */
-/*
-void 
-cpu_chk_tmr(cpu_t *cpu, ram_t *ram)
-{
-    if (cpu->registers [REGISTER_TIMERA] && 
-        cpu->registers [REGISTER_TIMERQ] && 
-        !(cpu->registers [REGISTER_TIMERQ] % cpu->cycle))
-    {
-        cpu->registers [REGISTER_STACKPOINTER] -= 4;
-        utils_store (ram, 
-					 cpu->registers [REGISTER_PC], 
-					 cpu->registers[REGISTER_STACKPOINTER], 
-					 32);
-        cpu->registers [REGISTER_PC] = cpu->registers [REGISTER_TIMERA];
-        ram->instruction = ((struct instr_s *) &ram->address) + cpu->registers [REGISTER_PC];
-    }
-}
-*/

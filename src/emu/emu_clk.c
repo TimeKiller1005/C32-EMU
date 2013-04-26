@@ -26,10 +26,17 @@
  *--------------------------------------------------
  */
 
+#include <stdlib.h>
 #include <string.h>
-#include <time.h>
+#include <sys/time.h>
 #include "emu.h"
+#include "emu_utils.h"
 
+/*
+ *--------------------------------------------------
+ * Constants
+ *--------------------------------------------------
+ */
 #define CLK_CODE_QUANTUM    (0x1)
 #define CLK_CODE_ADDRESS    (0x2)
 #define CLK_CODE_TIME       (0x3)
@@ -40,6 +47,12 @@ enum clk_states
     CLK_READ_ADDRESS,
     CLK_READ_REQUEST
 };
+
+/*
+ *--------------------------------------------------
+ * Functions
+ *--------------------------------------------------
+ */
 
 /*
  *--------------------------------------------------
@@ -85,12 +98,10 @@ clk_rd_port(clk_t *clk, uint32_t *dat)
         case CLK_READ_REQUEST: 
                 if (*dat == CLK_CODE_QUANTUM) clk->state    = CLK_READ_QUANTUM;
                 if (*dat == CLK_CODE_ADDRESS) clk->state    = CLK_READ_ADDRESS;
-                if (*dat == CLK_CODE_TIME)    *dat          = 0; /* todo: set this to the current time */
+                if (*dat == CLK_CODE_TIME)    clk_get_tv_usec (dat);
             break;
         default: clk->state = CLK_READ_REQUEST; break;
     }
-
-    *dat = 0;
 }
 
 /*
@@ -98,7 +109,7 @@ clk_rd_port(clk_t *clk, uint32_t *dat)
  * Function: clk_chk_tmr
  * Description:	
  *		check the timer, set cpu program counter
- *		if time.
+ *		if time quantum is up.
  * Params:
  * Returns: void
  *--------------------------------------------------
@@ -106,6 +117,40 @@ clk_rd_port(clk_t *clk, uint32_t *dat)
 void 
 clk_chk_tmr(clk_t *clk, cpu_t *cpu, ram_t *ram)
 {
+    uint32_t tv_usec;
     if (!clk->quantum || !clk->address) return;
+    clk_get_tv_usec (&tv_usec);
 
+    /* if we have reached our quantum (to the microsecond) */
+    if (tv_usec - clk->prv_tm >= (clk->quantum * 1000))
+    {
+        /* Perform a "CALL" and jump to clk->address */
+        cpu->registers [REGISTER_STACKPOINTER] -= 4;
+        utils_store (ram, 
+                     cpu->registers [REGISTER_PC], 
+                     cpu->registers[REGISTER_STACKPOINTER], 
+                     32);
+        cpu->registers [REGISTER_PC] = clk->address;
+
+        /* Update stored time of last jump */
+        clk->prv_tm = tv_usec;
+    }
+}
+
+/*
+ *--------------------------------------------------
+ * Function: clk_get_usec
+ * Description:
+ *      get the current time value in microseconds
+ *      from a particular epoch.
+ * Params:
+ * Returns: void
+ *--------------------------------------------------
+ */
+void
+clk_get_tv_usec(uint32_t *tv_usec)
+{
+    struct timeval tv;
+    gettimeofday (&tv, 0);
+    *tv_usec = (uint32_t) tv.tv_usec;
 }
