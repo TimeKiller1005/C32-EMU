@@ -4,30 +4,211 @@
     Copyright (C) 2013, Joe Mruz
 =========================================================
 
-*TODO*
-
---------
-Building
---------
+SOURCE
+======
+----------------
+	Building
+----------------
 Get SDL dev libraries...
-Makefiles provided in emu/ and common/
+Makefiles provided in src/emu/, src/common/ and src/asm/
 
-------------------
-Instruction format
-------------------
-
-
----------------
-Instruction Set
----------------
-
-
--------
-Devices
--------
-
-
------
-Usage
------
+-------------
+    Usage
+-------------
 "emu -h" for usage information
+
+
+SPECS
+=====
+------------------
+	Registers
+------------------
+16 Registers - 8 general purpose, 8 special purpose
+All 32 bits in length
+
+General purpose:
+A, B, C, D, W, X, Y, Z
+
+Special purpose:
+RTA     - by convention, used to store return address
+CFLAGS  - comparison and arithmetic operation flags
+PORT    - device I/O selector
+OFFSET  - used in "D" instructions, added to the immediate value
+SB      - stack base address
+SP      - stack pointer, address of stack "top"
+PC      - program counter
+ZERO    - always zero
+
+--------------------------
+	Instruction formats
+--------------------------
+
+Fixed width 32 bit instruction length
+
+Type 1:
+
+ 8 bits   4 bits        4 bits   16 bits
++=========================================+
+[opcode | destination | source | immediate]
++=========================================+
+
+Type 2:
+
+8 bits    4 bits        20 bits
++================================+
+[opcode | destination | immediate]
++================================+
+
+Type 3:
+
+8 bits    24 bits
++==================+
+[opcode | immediate]
++==================+
+
+-----------------------
+	Instruction Set
+-----------------------
+
+=====+========+============
+HEX  |  NAME  |	DESCRIPTION
+=====+========+============
+0x00 |  NOP	  |	
+-----+--------+------------	
+0x01 |  SET	  |
+-----+--------+------------
+0x02 |  MOV   |
+-----+--------+------------
+0x03 |  LOAD  |
+-----+--------+------------
+0x04 |  STORE |
+-----+--------+------------
+0x05 |  ADD   |
+-----+--------+------------
+0x06 |  SUB   |
+-----+--------+------------
+0x07 |  MUL   |
+-----+--------+------------
+0x08 |  DIV   |
+-----+--------+------------
+0x09 |  MOD   |
+-----+--------+------------
+0x0a |  NEG   |
+-----+--------+------------
+0x0b |  AND   |
+-----+--------+------------
+0x0c |  BOR   |
+-----+--------+------------
+0x0d |  XOR   |
+-----+--------+------------
+0x0e |  BSL   |
+-----+--------+------------
+0x0f |  BSR   |
+-----+--------+------------
+0x10 |  CMP   |
+-----+--------+------------
+0x11 |  IN    |
+-----+--------+------------
+0x12 |  OUT   |
+-----+--------+------------
+0x13 |  M32   |
+-----+--------+------------
+0x14 |  M16   |
+-----+--------+------------
+0x15 |  M8    |
+-----+--------+------------
+0x16 |  HLD   |
+-----+--------+------------
+0x17 |  HLT   |
+-----+--------+------------
+0x18 |  PUSH  |
+-----+--------+------------
+0x19 |  POP   |
+-----+--------+------------
+0x1a |  CALL  |
+-----+--------+------------
+0x1b |  JMP   |
+-----+--------+------------
+0x1c |  JR    |
+-----+--------+------------
+0x1d |  JZ    |
+-----+--------+------------
+0x1e |  JNZ   |
+-----+--------+------------
+0x1f |  JS    |
+-----+--------+------------
+0x20 |  JNS   |
+-----+--------+------------
+0x21 |  RET   |
+-----+--------+------------
+0x22 |  ---   |
+-----+--------+------------
+0x23 |  CR    |
+-----+--------+------------
+0x24 |  CZ    |
+-----+--------+------------
+0x25 |  CNZ   |
+-----+--------+------------
+0x26 |  CS    |
+-----+--------+------------
+0x27 |  CNS   |
+-----+--------+------------
+0x28 |  DSET  |
+-----+--------+------------
+0x29 |  DCALL |
+-----+--------+------------
+0x3a |  DJMP  |
+-----+--------+------------
+0x3b |  DJR   |
+-----+--------+------------
+0x3c |  DJZ   |
+-----+--------+------------
+0x3d |  DJNZ  |
+-----+--------+------------
+0x3e |  DJS   |
+-----+--------+------------
+0x3f |  DJNS  |
+-----+--------+------------
+0x40 |  DRET  |
+-----+--------+------------
+0x41 |  DCR   |
+-----+--------+------------
+0x42 |  DCZ   |
+-----+--------+------------
+0x43 |  DCNZ  |
+-----+--------+------------
+0x44 |  DCS   |
+-----+--------+------------
+0x45 |  DCNS  |
+=====+========+============
+
+--------------
+    Memory
+--------------
+
+2^32 maximum byte addresses (~ 4 GB)
+
+Only 1 MB for now...
+2^22 byte addresses (~ 1 MB)
+
+Reason: Instruction type 2 for moving an immediate value into register.
+However, can jump to 2^24 byte addresses with instruction type 3.
+
+Realistically, is there any reason why one would need to utilize a full 4 GB with
+this machine?
+
+---------------
+    Devices
+---------------
+
+* TODO *
+
+Display:
+
+Keyboard:
+
+Disk/Secondary storage:
+
+Rom:
+
+Clock:
