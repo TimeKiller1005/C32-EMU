@@ -142,8 +142,6 @@ emu_main_loop(void)
         sdl_sleep ();
     }
 
-    /*todo: can be removed when replaced with hardware clock*/
-    /*cpu_chk_tmr (Cpu, Ram);*/
     clk_chk_tmr (Clock, Cpu, Ram);
        
     if (!Emu_run)
