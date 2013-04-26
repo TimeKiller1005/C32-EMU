@@ -255,14 +255,14 @@ emu_dbg_txt(void)
     sdl_render_text ((void *)"A",       630, 110);
     sdl_render_text ((void *)"B",       630, 120);
     sdl_render_text ((void *)"C",       630, 130);
-    sdl_render_text ((void *)"X",       630, 140);
-    sdl_render_text ((void *)"Y",       630, 150);
-    sdl_render_text ((void *)"Z",       630, 160);
-    sdl_render_text ((void *)"CMP",     630, 170);
-    sdl_render_text ((void *)"P",       630, 180);
-    sdl_render_text ((void *)"TQ",      630, 190);
-    sdl_render_text ((void *)"TA",      630, 200);
-    sdl_render_text ((void *)"ACC",     630, 210);
+    sdl_render_text ((void *)"D",       630, 140);
+    sdl_render_text ((void *)"W",       630, 150);
+    sdl_render_text ((void *)"X",       630, 160);
+    sdl_render_text ((void *)"Y",       630, 170);
+    sdl_render_text ((void *)"Z",       630, 180);
+    sdl_render_text ((void *)"RTA",     630, 190);
+    sdl_render_text ((void *)"CF",      630, 200);
+    sdl_render_text ((void *)"P",       630, 210);
     sdl_render_text ((void *)"OFS",     630, 220);
     sdl_render_text ((void *)"SB",      630, 230);
     sdl_render_text ((void *)"SP",      630, 240);
@@ -273,6 +273,7 @@ emu_dbg_txt(void)
     sdl_render_text ((void *)"KEY",     570, 290);
     sdl_render_text ((void *)"DISK",    570, 300);
     sdl_render_text ((void *)"ROM",     570, 310);
+    sdl_render_text ((void *)"CLK",     570, 320);
 
     sdl_render_text ((void *)"STA",   570, 330);
 
