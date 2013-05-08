@@ -118,6 +118,10 @@ runtime_options(int argc, char **argv)
             {
                 Text_color = MONOAMBER;
             }
+            else if (!strncmp ("red", argv [i], sizeof (argv [i])))
+            {
+                Text_color = MONORED;
+            }
             else
             {
                 Text_color = MONOWHITE;

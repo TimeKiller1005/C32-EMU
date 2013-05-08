@@ -173,7 +173,7 @@ cpu_process(cpu_t *cpu, ram_t *ram)
 			cpu->state = STATE_HOLD; 
 			break;
         case HLT: 
-			cpu->state = STATE_HALT; 
+			cpu->state = STATE_HALT;
 			break;
 		case PUSH:
             cpu->registers [REGISTER_STACKPOINTER] -= 4;
@@ -226,10 +226,11 @@ cpu_process(cpu_t *cpu, ram_t *ram)
             			32);
             cpu->registers [REGISTER_STACKPOINTER] += 4;
             break;
-		case OPTIMIZED_CPY: utils_cpy_chunk (ram, 
-                                             cpu->registers [dst], 
-                                             cpu->registers [src], 
-                                             1024*150); 
+		case OPCP: 
+            utils_cpy_chunk (ram, 
+                             cpu->registers [dst], 
+                             cpu->registers [src], 
+                             1024*150); 
             break;
         case CR: 
         	cpu->registers [REGISTER_STACKPOINTER] -= 4;

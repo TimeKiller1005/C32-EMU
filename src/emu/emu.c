@@ -129,7 +129,7 @@ emu_main_loop(void)
             sdl_sleep ();
     }
 
-    if (Cpu->state != STATE_HALT)
+    if (Cpu->state == STATE_RUNNING)
     {
     	emu_rd_ports ();
         cpu_process (Cpu, Ram);
@@ -137,7 +137,16 @@ emu_main_loop(void)
     else
     {
         sdl_clear ();
-        sdl_draw_info ();
+        if (Cpu->state == STATE_HALT)
+        {
+            sdl_draw_info ();
+        }
+        else
+        {
+            sdl_draw (Display->buffer);
+            if (Emu_dbg_option)
+                emu_dbg_txt ();
+        }
         sdl_flip ();
         sdl_sleep ();
     }
@@ -244,12 +253,12 @@ emu_dbg_txt(void)
     {
         memset (buffer, 0, sizeof (buffer));
         sprintf (buffer, "0x%x", Cpu->ports [i]);
-        sdl_render_text ((void *)buffer, 630, 110+((i+REGISTERS)*10)+10);
+        sdl_render_text ((void *)buffer, 670, 110+((i+REGISTERS)*10)+10);
     }
 
     memset (buffer, 0, sizeof (buffer));
     sprintf (buffer, "0x%x", Cpu->state);
-    sdl_render_text ((void *)buffer, 630, 330);
+    sdl_render_text ((void *)buffer, 670, 330);
 
     sdl_render_text ((void *)"REGISTERS",630,100);   
     sdl_render_text ((void *)"A",       630, 110);
@@ -269,13 +278,13 @@ emu_dbg_txt(void)
     sdl_render_text ((void *)"PC",      630, 250);
     sdl_render_text ((void *)"0",       630, 260);
 
-    sdl_render_text ((void *)"DISP",    570, 280);
-    sdl_render_text ((void *)"KEY",     570, 290);
-    sdl_render_text ((void *)"DISK",    570, 300);
-    sdl_render_text ((void *)"ROM",     570, 310);
-    sdl_render_text ((void *)"CLK",     570, 320);
+    sdl_render_text ((void *)"DISP",    630, 280);
+    sdl_render_text ((void *)"KEY",     630, 290);
+    sdl_render_text ((void *)"DISK",    630, 300);
+    sdl_render_text ((void *)"ROM",     630, 310);
+    sdl_render_text ((void *)"CLK",     630, 320);
 
-    sdl_render_text ((void *)"STA",   570, 330);
+    sdl_render_text ((void *)"STA",   630, 330);
 
     i = 0;
     for(tmp = Cpu->registers [REGISTER_STACKBASE]; 

@@ -18,7 +18,7 @@ COMMON_OBJS=$(subst .c,.o,$(COMMON_SRCS))
 OBJS=$(subst .C,.o,$(SRCS))
 TAR=asm
 
-all: dbg source project
+all: dbg project
 
 dbg:
 	@echo "============================================="
@@ -31,10 +31,10 @@ dbg:
 	@echo "$(LDLIBS) | $(INCLUDES)"
 	@echo "============================================="
 	@echo ""
-
-source: $(SRCS)
 	@echo "Compiling"
-	$(CXX) $(DEBUG) -Wall -c $(SRCS) $(INCLUDES) $(LDLIBS)
+
+%.o: %.C
+	$(CXX) -c $(LDFLAGS) $(INCLUDES) $(LDLIBS) $< -o $@
 
 project: $(OBJS)
 	@echo ""

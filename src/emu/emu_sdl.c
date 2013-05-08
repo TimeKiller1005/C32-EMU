@@ -38,14 +38,17 @@ SDL_Surface	   *font_surf;
 SDL_Surface    *font_fx;
 TTF_Font	   *font;
 Uint32 			start_tm;
-Uint32 			blk_col, wht_col, grn_col, amb_col;
+Uint32 			blk_col, wht_col, grn_col, amb_col, red_col;
 SDL_Color		blk_txt = {0x00, 0x00, 0x00};
 SDL_Color		wht_txt	= {0xff, 0xff, 0xff};
 SDL_Color       grn_txt = {0x97, 0xff, 0x44};
 SDL_Color       amb_txt = {0xff, 0xBE, 0x00};
+SDL_Color       red_txt = {0xff, 0x3a, 0x00};
 SDL_Color      *txt_col;
 unsigned long   cnt;
 unsigned long   draw_cursor;
+
+ghost_t ghost_buf [DISPLAY_ROWS * DISPLAY_COLS];
 
 /*
  *--------------------------------------------------
@@ -69,6 +72,7 @@ sdl_init(void)
     wht_col = SDL_MapRGB (scr->format, 0xff, 0xff, 0xff);
     grn_col = SDL_MapRGB (scr->format, 0x00, 0xff, 0x00);
     amb_col = SDL_MapRGB (scr->format, 0xff, 0xbe, 0x00);
+    red_col = SDL_MapRGB (scr->format, 0xff, 0x3a, 0x00);
     start_tm = 0;
     cnt = 0;
     draw_cursor = 0;
@@ -77,6 +81,7 @@ sdl_init(void)
     {
         case MONOGREEN:     txt_col = &grn_txt; break;
         case MONOAMBER:     txt_col = &amb_txt; break;
+        case MONORED:       txt_col = &red_txt; break;
         default:            txt_col = &wht_txt; break;
     }
 
@@ -210,7 +215,7 @@ sdl_draw(uint8_t *buff)
 {
 	int r, c;
 	uint8_t ln_buf [DISPLAY_COLS];
-	
+
 	for (r = 0; r < DISPLAY_ROWS; r++) {
 		for (c = 0; c < DISPLAY_COLS; c++) {
 
@@ -228,7 +233,7 @@ sdl_draw(uint8_t *buff)
             ln_buf [c] = (draw_cursor && Display->cursor.enabled) && 
                          ((r * DISPLAY_COLS + c) == Display->cursor.pos) ?
                             Display->cursor.shape :
-                            ln_buf [c]; 
+                            ln_buf [c];
 		}
 		sdl_render_text (ln_buf, 5, r*15+5);
 	}
@@ -241,8 +246,49 @@ sdl_draw(uint8_t *buff)
     {
         draw_cursor = draw_cursor ? 0 : 1;
     }
+
+    /*
+     * draw ghosting effect
+     */
+     sdl_draw_ghosting ();
     
     cnt++;
+}
+
+/*
+ *--------------------------------------------------
+ * Function: sdl_draw_ghosting
+ * Description:
+ * Params:
+ * Returns:
+ *--------------------------------------------------
+ */
+void sdl_draw_ghosting(void)
+{
+    int r, c;
+    char buf [2] = {0};
+    
+    
+    for (r = 0; r < DISPLAY_ROWS; r++)
+    {
+        for(c = 0; c < DISPLAY_COLS; c++)
+        {
+            if (Ghost_buf [r * DISPLAY_COLS + c].active) 
+            {
+                buf [0] = Ghost_buf [r * DISPLAY_COLS + c].chr;
+                if (!buf[0]) continue;
+                if(font_surf) SDL_FreeSurface(font_surf);
+                font_surf = TTF_RenderText_Solid (font, (void *)buf, *txt_col);
+                SDL_SetAlpha (font_surf, SDL_SRCALPHA, Ghost_buf [r * DISPLAY_COLS + c].decay);
+                SDL_Surface* fg_alpha = SDL_DisplayFormatAlpha (font_surf);
+                utils_apply_surface (c*9+5, r*15+5, fg_alpha, scr);
+                SDL_FreeSurface (fg_alpha);
+                
+                Ghost_buf [r * DISPLAY_COLS + c].decay -= (20/Ghost_buf [r * DISPLAY_COLS + c].decay) + 2;
+                Ghost_buf [r * DISPLAY_COLS + c].active = Ghost_buf [r * DISPLAY_COLS + c].decay > 0 ? 1:0;
+            }
+        }
+    }
 }
 
 /*

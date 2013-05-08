@@ -54,6 +54,7 @@ void    sdl_init(void);
 void    sdl_load_cont(void);
 int     sdl_event_hndl(void);
 void    sdl_draw(uint8_t *buffer);
+void    sdl_draw_ghosting(void);
 void    sdl_draw_info(void);
 void	sdl_render_text(uint8_t *buffer, int x, int y);
 void	sdl_render_text_attr(uint8_t *buff, int x, int y, TTF_Font *font, SDL_Color *color);

@@ -81,6 +81,7 @@ int
 main(int argc, char** argv)
 {
 	string filename;
+    string path;
 	bool code_dump_enabled = false;
     bool dasm = false;
 	vector<string> includes;
@@ -100,6 +101,7 @@ main(int argc, char** argv)
 	}
 	else {
 		filename = argv[1];
+        path = filename.substr(0, filename.find_last_of("/"));
 
 		if(std::string(argv[argc-1]) == std::string("--dasm")) {
 			code_dump_enabled = true;
@@ -195,7 +197,7 @@ main(int argc, char** argv)
 			case ADD: case SUB: case MUL: case DIV:
 			case MOD: case AND: case BOR: case XOR:
 			case BSL: case BSR: case CMP: case LOAD:
-			case MOV: case STORE:         case OPTIMIZED_CPY:
+			case MOV: case STORE:         case OPCP:
 			
 				ins.dst_src 	= (register_a2i (dst [line]) << 4) & 0xF0;
 				ins.dst_src 	|= register_a2i (src [line]);
@@ -280,7 +282,7 @@ main(int argc, char** argv)
 	}
 	
 	FILE *out_file;
-	out_file = fopen("a.out", "wb");
+	out_file = fopen (string(path + "/a.out").c_str(), "wb");
 	if(!out_file)
 	{
 		printf("Error: Could not open out file!\n");
@@ -497,7 +499,7 @@ uint8_t opcode_a2i (string& opcode)
 	if(opcode == "JS") 		return JS;
 	if(opcode == "JNS") 	return JNS;
 	if(opcode == "RET") 	return RET;
-	if(opcode == "OPCPY") 	return OPTIMIZED_CPY;
+	if(opcode == "OPCP") 	return OPCP;
     if(opcode == "CR")      return CR;
     if(opcode == "CZ")      return CZ;
     if(opcode == "CNZ")     return CNZ;

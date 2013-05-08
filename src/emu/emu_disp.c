@@ -50,6 +50,14 @@
 
 /*
  *--------------------------------------------------
+ * global variables
+ *--------------------------------------------------
+ */
+ghost_t Ghost_buf [DISPLAY_ROWS * DISPLAY_COLS];
+
+
+/*
+ *--------------------------------------------------
  * objects
  *--------------------------------------------------
  */
@@ -93,6 +101,8 @@ disp_init(disp_t* disp)
     disp->cursor.pos        = 0;
     disp->cursor.shape      = 0xdb;
     disp->cursor.enabled    = 0;
+
+    memset (Ghost_buf, 0, sizeof (Ghost_buf));
 }
 
 /*
@@ -182,6 +192,7 @@ void
 disp_rd_adr_map(disp_t *disp, ram_t *ram)
 {
 	unsigned int i;
+	uint8_t before;
 	
     if (! disp->buffer_map_adr)
 	{
@@ -190,6 +201,13 @@ disp_rd_adr_map(disp_t *disp, ram_t *ram)
 	
 	for (i = 0; i < DISPLAY_BUFFER_SIZE; i++) 
 	{
+	    before = disp->buffer [i];
 		disp->buffer [i] = ram->address [(disp->buffer_map_adr) + i];
+		if (before != disp->buffer [i])
+		{
+		    Ghost_buf [i].chr = before;
+		    Ghost_buf [i].active = 1;
+		    Ghost_buf [i].decay = 180;
+		}
 	}
 }

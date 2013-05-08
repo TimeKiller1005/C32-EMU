@@ -56,6 +56,7 @@
 #define ROM_FILENAME			"rom.dat"
 #define MONOGREEN               1
 #define MONOAMBER               2
+#define MONORED                 3
 #define MONOWHITE               0
 
 /*
@@ -117,6 +118,13 @@ struct disp_s
     disp_hwcursor_st    cursor;
 };
 
+typedef struct
+{
+    uint8_t chr;    /* character to display */
+    int16_t decay;  /* decay time */
+    uint8_t active; /* run the decay effect */
+} ghost_t;
+
 
 /*
  *--------------------------------------------------
@@ -139,7 +147,7 @@ typedef struct clk_s     clk_t;
 extern cpu_t    Cpu [];
 extern disp_t   Display [];
 extern int      Emu_run;
-extern int		Emu_dbg_option;
+extern int	Emu_dbg_option;
 extern int      Emu_refresh_rate;
 extern int      Emu_max_speed;
 extern char     Disk_filn [];
@@ -147,6 +155,7 @@ extern char     Rom_filn [];
 extern int      Boot_disk;
 extern uint32_t Kb_buffer[];
 extern int      Text_color;
+extern ghost_t  Ghost_buf [];
 
 /*
  *--------------------------------------------------
